@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inventory Management</title>
+  <style>
+      
+  </style>
+</head>
+
+<body>
+  <div id="create">
+    <h1>Add Products in Inventory</h1>
+    <form>
+      <input placeholder="Product Name" id="name" type="text" />
+      <select id="category">
+        <option value="">Product Catagory</option>
+        <option value="Grocery">Grocery</option>
+        <option value="Electronics">Electronics</option>
+        <option value="Fashion">Fashion</option>
+        <option value="Home Appliances">Home Appliances</option>
+      </select>
+      <input type="text" id="brand" placeholder="Brand" />
+      <input placeholder="Product Price" id="price" type="number" />
+      <select id="deliveredBy">
+        <option value="">Delivered By</option>
+        <option value="Plane">Plane</option>
+        <option value="Ship">Ship</option>
+        <option value="Delivery Van">Delivery Van</option>
+      </select>
+      <input type="submit" value="Add Inventory" />
+    </form>
+  </div>
+  <!-- This is the h1 tag for showing the total price  -->
+  <h1 id="total-price">Total Price:- 0</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Product Name</th>
+        <th>Catagory</th>
+        <th>Brand</th>
+        <th>Price</th>
+        <th>Delivered By</th>
+        <th>Price Segment</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Here you will append the data as tr-td when the form gets submitted  -->
+    </tbody>
+  </table>
+</body>
+<script>
+    
+    var data = JSON.parse(localStorage.getItem("dataStorage")) || []
+
+    var form = document.querySelector("form")
+    var tbody = document.querySelector("tbody")
+    var total = document.getElementById("total-price")
+    var totalprice=0;
+
+    form.addEventListener("submit", subForm)
+
+    function subForm(event){
+      event.preventDefault()
+
+      var obj ={
+        name:event.target.name.value,
+        catagory:event.target.category.value,
+        brand:event.target.brand.value,
+        price:event.target.price.value,
+        deliveredBy:event.target.deliveredBy.value
+      }
+
+      if(obj.name=="" || obj.catagory=="" || obj.brand=="" || obj.price=="" || obj.deliveredBy==""){
+        alert("Fill all the details")
+      }else{
+        totalprice+=obj.price
+        total.innerText=`Total Price:-${totalprice}`
+        data.push(obj)
+        localStorage.setItem("dataStorage",JSON.stringify(data))
+      }
+
+      tbody.innerHTML=""
+      data.forEach(function(el,index){
+        var tr=document.createElement("tr")
+        var tdname=document.createElement("td")
+        var tdcatagory=document.createElement("td")
+        var tdbrand=document.createElement("td")
+        var tdprice=document.createElement("td")
+        var tddeliveredBy=document.createElement("td")
+        var tddetail=document.createElement("td")
+        var tddetete=document.createElement("td")
+        
+        tdname.innerText=el.name
+        tdcatagory.innerText=el.catagory
+        tdbrand.innerText=el.brand
+        tdprice.innerText=el.price
+        tddeliveredBy.innerText=el.deliveredBy
+        if(el.price>1000){
+          tddetail.innerText="Expensive"
+        }else{
+          tddetail.innerText="Not-Expensive"
+        }
+        tddetete.innerText="Delete"
+
+        tddetete.addEventListener("click",function(event){
+          event.preventDefault()
+          
+          totalprice-=el.price
+          total.innerText=`Total Price:-${totalprice}`
+          event.target.parentNode.remove()
+          data.splice(index,1)
+          localStorage.setItem("dataStorage",JSON.stringify(data))
+        })
+
+        tr.append(tdname, tdcatagory, tdbrand, tdprice, tddeliveredBy, tddetail, tddetete) 
+        tbody.append(tr)
+
+      })
+    }
+
+    
+
+      
+
+</script>
+
+</html>
